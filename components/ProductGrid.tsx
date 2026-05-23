@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { products } from "@/lib/products";
 import CategoryFilter from "./CategoryFilter";
 import ProductCard from "./ProductCard";
@@ -8,6 +8,15 @@ import ProductCard from "./ProductCard";
 export default function ProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      setSelectedCategory(e.detail.category);
+      setSearchQuery("");
+    };
+    window.addEventListener("muunad:category", handler as EventListener);
+    return () => window.removeEventListener("muunad:category", handler as EventListener);
+  }, []);
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { All: products.length };
