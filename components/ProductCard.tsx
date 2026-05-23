@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Product } from "@/lib/products";
 import { useCart } from "@/lib/CartContext";
 import ProductModal from "./ProductModal";
@@ -54,12 +55,22 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer flex flex-col">
         {/* Image area */}
         <div
-          className={`relative h-44 sm:h-52 bg-gradient-to-br ${style.from} ${style.to} flex items-center justify-center`}
+          className={`relative h-44 sm:h-52 bg-gradient-to-br ${style.from} ${style.to} flex items-center justify-center overflow-hidden`}
           onClick={() => setModalOpen(true)}
         >
-          <span className="text-6xl sm:text-7xl transform group-hover:scale-110 transition-transform duration-500 select-none">
-            {emoji}
-          </span>
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-contain p-4 transform group-hover:scale-105 transition-transform duration-500"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            />
+          ) : (
+            <span className="text-6xl sm:text-7xl transform group-hover:scale-110 transition-transform duration-500 select-none">
+              {emoji}
+            </span>
+          )}
           {/* Category badge */}
           <span className="absolute top-3 left-3 bg-white/80 backdrop-blur-sm text-[10px] font-semibold px-2.5 py-1 rounded-full text-trust">
             {product.category}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import { Product } from "@/lib/products";
 import { useCart } from "@/lib/CartContext";
 
@@ -50,8 +51,18 @@ export default function ProductModal({ product, onClose }: { product: Product; o
         onClick={(e) => e.stopPropagation()}
       >
         {/* Image header */}
-        <div className={`relative h-52 bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-          <span className="text-8xl">{emoji}</span>
+        <div className={`relative h-52 bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              className="object-contain p-6"
+              sizes="(max-width: 640px) 100vw, 512px"
+            />
+          ) : (
+            <span className="text-8xl">{emoji}</span>
+          )}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 w-9 h-9 bg-white/80 rounded-full flex items-center justify-center text-trust hover:bg-white transition-colors"

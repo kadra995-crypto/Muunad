@@ -7,6 +7,7 @@ export interface Product {
   retailPrice: number;
   description: string;
   tags: string[];
+  image?: string;
 }
 
 export const products: Product[] = [
