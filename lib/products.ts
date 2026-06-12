@@ -25,6 +25,7 @@ export const products: Product[] = [
     description: "Top cleansing oil in K-beauty for pore-minimizing results. Melts away makeup, sunscreen, and excess sebum while heartleaf extract soothes the skin. The first step of a proper double cleanse.",
     tags: ["Cleansing Oil", "Pore Care", "Makeup Removal", "Heartleaf"],
     stock: 10,
+    images: ["/products/anua-heartleaf-cleansing-oil-1.jpg"],
   },
   {
     id: 2,
@@ -36,6 +37,7 @@ export const products: Product[] = [
     description: "Dermatologist-developed gentle cleanser with ceramides and hyaluronic acid. Cleanses without stripping moisture — ideal for normal to dry skin and daily use.",
     tags: ["Gentle", "Ceramides", "Dermatologist", "Hydrating"],
     stock: 12,
+    images: ["/products/cerave-hydrating-cleanser-1.jpg"],
   },
   {
     id: 3,
@@ -118,6 +120,7 @@ export const products: Product[] = [
     description: "Concentrated centella soothing ampoule for sensitive and reactive skin. Calms redness and strengthens the skin barrier.",
     tags: ["Centella", "Soothing", "Sensitive Skin", "Barrier"],
     stock: 7,
+    images: ["/products/skin1004-centella-ampoule-1.jpg"],
   },
   {
     id: 10,
@@ -141,6 +144,7 @@ export const products: Product[] = [
     description: "TikTok-famous moisturizing tub. Ceramides and hyaluronic acid deliver 24-hour hydration for face and body — unbeatable value in the big size.",
     tags: ["Ceramides", "24H Hydration", "Face & Body", "Value Size"],
     stock: 8,
+    images: ["/products/cerave-moisturising-cream-1.jpg"],
   },
   {
     id: 12,
