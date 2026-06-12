@@ -102,6 +102,7 @@ export const products: Product[] = [
     description: "Trending clinical serum with PDRN and peptides for firmer, bouncier skin. The same regenerative ingredient used in medical aesthetics.",
     tags: ["PDRN", "Peptides", "Firming", "Trending"],
     stock: 7,
+    images: ["/products/medicube-pdrn-serum-1.jpg"],
   },
   {
     id: 9,
@@ -124,6 +125,7 @@ export const products: Product[] = [
     description: "Iconic cult cream and global K-beauty staple. 92% snail secretion filtrate heals, hydrates, and smooths all in one step.",
     tags: ["Snail Mucin", "All-in-One", "Healing", "Cult Classic"],
     stock: 10,
+    images: ["/products/cosrx-snail-cream-1.jpg"],
   },
   {
     id: 11,
@@ -146,6 +148,11 @@ export const products: Product[] = [
     description: "Viral TikTok SPF #1 globally. No white cast, rice extract brightens while probiotics strengthen the skin barrier. Perfect for Somalia's high-UV climate.",
     tags: ["SPF 50+", "No White Cast", "K-Beauty", "Brightening"],
     stock: 18,
+    images: [
+      "/products/boj-relief-sun-2.jpg",
+      "/products/boj-relief-sun-1.jpg",
+      "/products/boj-relief-sun-3.jpg",
+    ],
   },
   {
     id: 13,
@@ -179,6 +186,7 @@ export const products: Product[] = [
     description: "Dermatologist gold-standard SPF trusted globally. Invisible finish with advanced UVMune 400 technology for superior UV protection.",
     tags: ["SPF 50+", "Invisible", "Dermatologist", "Premium"],
     stock: 5,
+    images: ["/products/lrp-anthelios-uvmune400-1.jpg"],
   },
   {
     id: 16,
