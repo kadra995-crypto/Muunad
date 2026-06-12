@@ -3,21 +3,21 @@
 import { useState, useEffect } from "react";
 import { useCart } from "@/lib/CartContext";
 
-type PaymentMethod = "evc" | "sahal" | "zaad" | "visa";
+type PaymentMethod = "evc" | "sahal" | "zaad";
 type Step = "info" | "payment" | "confirm";
 
+const WHATSAPP_NUMBER = "25261896701";
+
 const MERCHANT_NUMBERS: Record<PaymentMethod, string> = {
-  evc: "+252 61 500 0000",
-  sahal: "+252 61 500 0001",
-  zaad: "+252 63 500 0000",
-  visa: "",
+  evc: "+252 61 896 701",
+  sahal: "+252 61 896 701",
+  zaad: "+252 61 896 701",
 };
 
 const PAYMENT_METHODS = [
-  { id: "evc" as PaymentMethod, label: "EVC Plus", emoji: "📱", desc: "Hormuud Telesom", color: "bg-red-50 border-red-200 text-red-700" },
-  { id: "sahal" as PaymentMethod, label: "Sahal", emoji: "🏦", desc: "Premier Bank", color: "bg-blue-50 border-blue-200 text-blue-700" },
-  { id: "zaad" as PaymentMethod, label: "Zaad", emoji: "📲", desc: "Telesom", color: "bg-orange-50 border-orange-200 text-orange-700" },
-  { id: "visa" as PaymentMethod, label: "Visa / Mastercard", emoji: "💳", desc: "Credit & Debit Cards", color: "bg-indigo-50 border-indigo-200 text-indigo-700" },
+  { id: "evc" as PaymentMethod, label: "EVC Plus", emoji: "📱", desc: "Hormuud" },
+  { id: "sahal" as PaymentMethod, label: "Sahal", emoji: "🏦", desc: "Premier Bank" },
+  { id: "zaad" as PaymentMethod, label: "Zaad", emoji: "📲", desc: "Telesom" },
 ];
 
 export default function CheckoutModal() {
@@ -28,12 +28,16 @@ export default function CheckoutModal() {
 
   const [info, setInfo] = useState({ name: "", phone: "", address: "" });
   const [mobileRef, setMobileRef] = useState("");
-  const [card, setCard] = useState({ number: "", name: "", expiry: "", cvv: "" });
+  const [error, setError] = useState("");
+  // Snapshot of the total at confirmation time — totalPrice goes to 0 once the cart clears
+  const [confirmedTotal, setConfirmedTotal] = useState(0);
 
   useEffect(() => {
     if (state.isCheckoutOpen) {
       document.body.style.overflow = "hidden";
       setStep("info");
+      setError("");
+      setMobileRef("");
     } else {
       document.body.style.overflow = "";
     }
@@ -42,15 +46,31 @@ export default function CheckoutModal() {
 
   if (!state.isCheckoutOpen) return null;
 
+  const validPhone = (p: string) => p.replace(/\D/g, "").length >= 9;
+
+  const handleContinueToPayment = () => {
+    if (!info.name.trim() || !info.phone.trim() || !info.address.trim()) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    if (!validPhone(info.phone)) {
+      setError("Please enter a valid phone number, e.g. +252 61 XXX XXXX");
+      return;
+    }
+    setError("");
+    setStep("payment");
+  };
+
   const handleConfirmOrder = () => {
+    if (mobileRef.trim().length < 4) {
+      setError("Please enter the transaction reference number you received after sending the payment.");
+      return;
+    }
+    setError("");
+    setConfirmedTotal(totalPrice);
     setStep("confirm");
     clearCart();
   };
-
-  const formatCardNumber = (val: string) =>
-    val.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-  const formatExpiry = (val: string) =>
-    val.replace(/\D/g, "").slice(0, 4).replace(/(.{2})(.{1,2})/, "$1/$2");
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
@@ -112,14 +132,12 @@ export default function CheckoutModal() {
                 </div>
               ))}
 
+              {error && (
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
+              )}
+
               <button
-                onClick={() => {
-                  if (!info.name || !info.phone || !info.address) {
-                    alert("Please fill in all fields.");
-                    return;
-                  }
-                  setStep("payment");
-                }}
+                onClick={handleContinueToPayment}
                 className="w-full bg-natural text-white py-4 rounded-2xl font-semibold text-sm hover:bg-trust transition-colors mt-2"
               >
                 Continue to Payment →
@@ -133,7 +151,7 @@ export default function CheckoutModal() {
               <p className="text-sm font-semibold text-trust mb-3">Choose Payment Method</p>
 
               {/* Payment method buttons */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {PAYMENT_METHODS.map((pm) => (
                   <button
                     key={pm.id}
@@ -152,112 +170,54 @@ export default function CheckoutModal() {
               </div>
 
               {/* Mobile money instructions */}
-              {paymentMethod !== "visa" && (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 space-y-3">
-                  <p className="text-sm font-bold text-green-800">
-                    {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label} Payment Instructions
+              <div className="bg-green-50 border border-green-200 rounded-2xl p-4 space-y-3">
+                <p className="text-sm font-bold text-green-800">
+                  {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label} Payment Instructions
+                </p>
+                <div className="space-y-2 text-xs text-green-700">
+                  <div className="flex justify-between items-center py-2 border-b border-green-200">
+                    <span className="text-green-600">Send to:</span>
+                    <span className="font-bold text-sm">{MERCHANT_NUMBERS[paymentMethod]}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-green-200">
+                    <span className="text-green-600">Name:</span>
+                    <span className="font-bold">MUUNAD Store</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-green-600">Amount:</span>
+                    <span className="font-bold text-base text-natural">${totalPrice.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-green-800 mb-1.5 block">
+                    Enter Transaction Reference Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. TXN123456789"
+                    value={mobileRef}
+                    onChange={(e) => setMobileRef(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-green-300 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-green-500 transition-colors"
+                  />
+                  <p className="text-[10px] text-green-600 mt-1">
+                    Send the payment first, then enter the reference you received.
                   </p>
-                  <div className="space-y-2 text-xs text-green-700">
-                    <div className="flex justify-between items-center py-2 border-b border-green-200">
-                      <span className="text-green-600">Send to:</span>
-                      <span className="font-bold text-sm">{MERCHANT_NUMBERS[paymentMethod]}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b border-green-200">
-                      <span className="text-green-600">Name:</span>
-                      <span className="font-bold">MUUNAD Store</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-green-600">Amount:</span>
-                      <span className="font-bold text-base text-natural">${totalPrice.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold text-green-800 mb-1.5 block">
-                      Enter Transaction Reference Number
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. TXN123456789"
-                      value={mobileRef}
-                      onChange={(e) => setMobileRef(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-green-300 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-green-500 transition-colors"
-                    />
-                    <p className="text-[10px] text-green-600 mt-1">
-                      Send the payment first, then enter the reference you received.
-                    </p>
-                  </div>
                 </div>
-              )}
+              </div>
 
-              {/* Visa card form */}
-              {paymentMethod === "visa" && (
-                <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 space-y-3">
-                  <p className="text-sm font-bold text-indigo-800">Card Details</p>
-                  <div>
-                    <label className="text-xs font-semibold text-indigo-700 mb-1.5 block">Card Number</label>
-                    <input
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      value={card.number}
-                      onChange={(e) => setCard({ ...card, number: formatCardNumber(e.target.value) })}
-                      className="w-full px-4 py-3 bg-white border border-indigo-200 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-indigo-400 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold text-indigo-700 mb-1.5 block">Cardholder Name</label>
-                    <input
-                      type="text"
-                      placeholder="Name on card"
-                      value={card.name}
-                      onChange={(e) => setCard({ ...card, name: e.target.value })}
-                      className="w-full px-4 py-3 bg-white border border-indigo-200 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-indigo-400 transition-colors"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-xs font-semibold text-indigo-700 mb-1.5 block">Expiry</label>
-                      <input
-                        type="text"
-                        placeholder="MM/YY"
-                        value={card.expiry}
-                        onChange={(e) => setCard({ ...card, expiry: formatExpiry(e.target.value) })}
-                        className="w-full px-4 py-3 bg-white border border-indigo-200 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-indigo-400 transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-semibold text-indigo-700 mb-1.5 block">CVV</label>
-                      <input
-                        type="password"
-                        placeholder="•••"
-                        maxLength={4}
-                        value={card.cvv}
-                        onChange={(e) => setCard({ ...card, cvv: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                        className="w-full px-4 py-3 bg-white border border-indigo-200 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-indigo-400 transition-colors"
-                      />
-                    </div>
-                  </div>
-                </div>
+              {error && (
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>
               )}
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => setStep("info")}
+                  onClick={() => { setError(""); setStep("info"); }}
                   className="flex-1 border border-light text-trust py-3.5 rounded-2xl text-sm font-medium hover:border-natural hover:text-natural transition-colors"
                 >
                   ← Back
                 </button>
                 <button
-                  onClick={() => {
-                    if (paymentMethod !== "visa" && !mobileRef) {
-                      alert("Please enter the transaction reference number.");
-                      return;
-                    }
-                    if (paymentMethod === "visa" && (!card.number || !card.name || !card.expiry || !card.cvv)) {
-                      alert("Please fill in all card details.");
-                      return;
-                    }
-                    handleConfirmOrder();
-                  }}
+                  onClick={handleConfirmOrder}
                   className="flex-[2] bg-natural text-white py-3.5 rounded-2xl text-sm font-semibold hover:bg-trust transition-colors"
                 >
                   Confirm Order
@@ -283,18 +243,26 @@ export default function CheckoutModal() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-trust/50">Total Paid</span>
-                  <span className="font-bold text-natural">${totalPrice.toFixed(2)}</span>
+                  <span className="font-bold text-natural">${confirmedTotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-trust/50">Payment</span>
-                  <span className="font-bold text-natural capitalize">{paymentMethod === "visa" ? "Visa Card" : paymentMethod.toUpperCase()}</span>
+                  <span className="font-bold text-natural">
+                    {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-trust/50">Reference</span>
+                  <span className="font-bold text-natural">{mobileRef}</span>
                 </div>
               </div>
               <p className="text-xs text-trust/50 leading-relaxed">
                 We will contact you on <strong>{info.phone}</strong> to confirm delivery details.
               </p>
               <a
-                href={`https://wa.me/252615000000?text=Hello%20MUUNAD!%20My%20order%20${orderNumber}%20has%20been%20placed%20for%20$${totalPrice.toFixed(2)}.%20Please%20confirm.`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                  `Hello MUUNAD! My order ${orderNumber} has been placed.\nName: ${info.name}\nTotal: $${confirmedTotal.toFixed(2)}\nPayment: ${PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}\nReference: ${mobileRef}\nAddress: ${info.address}`
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3.5 rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"

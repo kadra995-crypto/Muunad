@@ -28,8 +28,10 @@ type CartAction =
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
+      if (action.product.stock <= 0) return state;
       const existing = state.items.find((i) => i.product.id === action.product.id);
       if (existing) {
+        if (existing.quantity >= action.product.stock) return state;
         return {
           ...state,
           items: state.items.map((i) =>
@@ -50,7 +52,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       return {
         ...state,
         items: state.items.map((i) =>
-          i.product.id === action.productId ? { ...i, quantity: action.quantity } : i
+          i.product.id === action.productId
+            ? { ...i, quantity: Math.min(action.quantity, i.product.stock) }
+            : i
         ),
       };
     case "CLEAR_CART":

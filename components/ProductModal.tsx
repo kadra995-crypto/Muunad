@@ -31,7 +31,10 @@ export default function ProductModal({ product, onClose }: { product: Product; o
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  const outOfStock = product.stock <= 0;
+
   const handleAdd = () => {
+    if (outOfStock) return;
     addToCart(product);
     onClose();
     openCart();
@@ -81,6 +84,15 @@ export default function ProductModal({ product, onClose }: { product: Product; o
           <p className="text-xs font-bold text-quality tracking-widest uppercase mb-1">{product.brand}</p>
           <h2 className="font-display text-xl font-bold text-trust leading-snug mb-1">{product.name}</h2>
           <p className="text-xs text-gray-400 mb-4">{product.volume}</p>
+          {outOfStock ? (
+            <p className="text-xs font-bold text-gray-500 bg-gray-100 inline-block px-3 py-1 rounded-full mb-3">
+              Out of Stock
+            </p>
+          ) : product.stock <= 5 ? (
+            <p className="text-xs font-bold text-red-600 bg-red-50 inline-block px-3 py-1 rounded-full mb-3">
+              Only {product.stock} left in stock
+            </p>
+          ) : null}
           <p className="text-sm text-trust/70 leading-relaxed mb-5">{product.description}</p>
 
           {/* Tags */}
@@ -102,9 +114,14 @@ export default function ProductModal({ product, onClose }: { product: Product; o
             </div>
             <button
               onClick={handleAdd}
-              className="bg-natural text-white px-8 py-3.5 rounded-2xl font-semibold text-sm hover:bg-trust transition-all duration-200 hover:shadow-lg active:scale-95"
+              disabled={outOfStock}
+              className={`px-8 py-3.5 rounded-2xl font-semibold text-sm transition-all duration-200 ${
+                outOfStock
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-natural text-white hover:bg-trust hover:shadow-lg active:scale-95"
+              }`}
             >
-              Add to Cart
+              {outOfStock ? "Out of Stock" : "Add to Cart"}
             </button>
           </div>
         </div>

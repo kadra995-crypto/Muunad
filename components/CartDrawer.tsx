@@ -127,7 +127,7 @@ export default function CartDrawer() {
               Proceed to Checkout
             </button>
             <a
-              href="https://wa.me/252615000000?text=Hello%20MUUNAD!%20I%20would%20like%20to%20place%20an%20order."
+              href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20would%20like%20to%20place%20an%20order."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3.5 rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"

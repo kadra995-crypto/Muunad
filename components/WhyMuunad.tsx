@@ -17,7 +17,7 @@ const features = [
   {
     emoji: "📱",
     title: "Easy Somali Payments",
-    desc: "Pay with EVC Plus, Sahal, or Zaad — the payment methods you already trust. Visa and Mastercard also accepted.",
+    desc: "Pay with EVC Plus, Sahal, or Zaad — the payment methods you already trust.",
   },
 ];
 

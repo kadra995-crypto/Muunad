@@ -42,8 +42,12 @@ export default function ProductCard({ product }: { product: Product }) {
   };
   const emoji = categoryEmoji[product.category] || "✨";
 
+  const outOfStock = product.stock <= 0;
+  const lowStock = product.stock > 0 && product.stock <= 5;
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (outOfStock) return;
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -76,9 +80,20 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.category}
           </span>
           {/* SPF badge */}
-          {product.category === "SPF" && (
+          {product.category === "SPF" && !outOfStock && (
             <span className="absolute top-3 right-3 bg-quality text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
               SPF 50+
+            </span>
+          )}
+          {/* Stock badges */}
+          {outOfStock && (
+            <span className="absolute top-3 right-3 bg-gray-700 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+              Out of Stock
+            </span>
+          )}
+          {lowStock && (
+            <span className="absolute bottom-3 left-3 bg-red-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+              Only {product.stock} left
             </span>
           )}
           {/* View detail hint */}
@@ -108,13 +123,16 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
             <button
               onClick={handleAddToCart}
+              disabled={outOfStock}
               className={`text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-200 ${
-                added
+                outOfStock
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : added
                   ? "bg-emerald-500 text-white"
                   : "bg-natural text-white hover:bg-trust active:scale-95"
               }`}
             >
-              {added ? "Added ✓" : "Add to Cart"}
+              {outOfStock ? "Out of Stock" : added ? "Added ✓" : "Add to Cart"}
             </button>
           </div>
         </div>

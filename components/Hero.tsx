@@ -45,7 +45,7 @@ export default function Hero() {
                 Shop Now
               </button>
               <a
-                href="https://wa.me/252615000000?text=Hello%20MUUNAD!%20I%20would%20like%20to%20learn%20more%20about%20your%20products."
+                href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20would%20like%20to%20learn%20more%20about%20your%20products."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 border-2 border-natural text-natural px-8 py-4 rounded-2xl font-semibold text-sm tracking-wide hover:bg-natural hover:text-white transition-all duration-300"
@@ -60,7 +60,7 @@ export default function Hero() {
             {/* Stats */}
             <div className="flex gap-8 justify-center lg:justify-start pt-4">
               {[
-                { value: "30+", label: "Products" },
+                { value: "16", label: "Curated Products" },
                 { value: "K-Beauty", label: "Curated" },
                 { value: "SPF 50+", label: "Sun Protection" },
               ].map((stat) => (

@@ -8,12 +8,9 @@ const shopCategories = [
   { name: "Serum", emoji: "💧" },
   { name: "Essence", emoji: "🌿" },
   { name: "Toner", emoji: "🌸" },
-  { name: "Cream", emoji: "🍯" },
-  { name: "Moisturizer", emoji: "💦" },
   { name: "Cleanser", emoji: "✨" },
+  { name: "Moisturizer", emoji: "💦" },
   { name: "Treatment", emoji: "🔬" },
-  { name: "Patch", emoji: "🩹" },
-  { name: "Eye Patch", emoji: "👁️" },
 ];
 
 function MuunadLogo() {
@@ -138,7 +135,7 @@ export default function Header() {
               About
             </button>
             <a
-              href="https://wa.me/252615000000?text=Hello%20MUUNAD!%20I%20need%20help%20with%20a%20product."
+              href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20need%20help%20with%20a%20product."
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-trust hover:text-natural transition-colors"
@@ -239,7 +236,7 @@ export default function Header() {
               About
             </button>
             <a
-              href="https://wa.me/252615000000?text=Hello%20MUUNAD!%20I%20need%20help%20with%20a%20product."
+              href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20need%20help%20with%20a%20product."
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm font-medium text-trust py-3"
