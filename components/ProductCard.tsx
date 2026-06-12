@@ -44,6 +44,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const outOfStock = product.stock <= 0;
   const lowStock = product.stock > 0 && product.stock <= 5;
+  const thumbnail = product.images?.[0] ?? product.image;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -62,9 +63,9 @@ export default function ProductCard({ product }: { product: Product }) {
           className={`relative h-44 sm:h-52 bg-gradient-to-br ${style.from} ${style.to} flex items-center justify-center overflow-hidden`}
           onClick={() => setModalOpen(true)}
         >
-          {product.image ? (
+          {thumbnail ? (
             <Image
-              src={product.image}
+              src={thumbnail}
               alt={product.name}
               fill
               className="object-contain p-4 transform group-hover:scale-105 transition-transform duration-500"

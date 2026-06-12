@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/products";
 import { useCart } from "@/lib/CartContext";
@@ -25,11 +25,18 @@ const categoryStyles: Record<string, string> = {
 
 export default function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
   const { addToCart, openCart } = useCart();
+  const [activeImage, setActiveImage] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
+
+  const images = product.images?.length
+    ? product.images
+    : product.image
+    ? [product.image]
+    : [];
 
   const outOfStock = product.stock <= 0;
 
@@ -55,9 +62,9 @@ export default function ProductModal({ product, onClose }: { product: Product; o
       >
         {/* Image header */}
         <div className={`relative h-52 bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
-          {product.image ? (
+          {images.length > 0 ? (
             <Image
-              src={product.image}
+              src={images[activeImage]}
               alt={product.name}
               fill
               className="object-contain p-6"
@@ -78,6 +85,23 @@ export default function ProductModal({ product, onClose }: { product: Product; o
             {product.category}
           </span>
         </div>
+
+        {/* Thumbnail gallery */}
+        {images.length > 1 && (
+          <div className="flex gap-2 px-6 pt-4 overflow-x-auto">
+            {images.map((src, i) => (
+              <button
+                key={src}
+                onClick={() => setActiveImage(i)}
+                className={`relative w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-colors ${
+                  i === activeImage ? "border-natural" : "border-transparent"
+                }`}
+              >
+                <Image src={src} alt={`${product.name} ${i + 1}`} fill className="object-cover" sizes="56px" />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-6">

@@ -9,6 +9,7 @@ export interface Product {
   tags: string[];
   stock: number;
   image?: string;
+  images?: string[];
 }
 
 // Prices = wholesale cost (AED ÷ 3.6725) + 35% margin.
