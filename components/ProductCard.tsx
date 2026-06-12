@@ -60,7 +60,7 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer flex flex-col">
         {/* Image area */}
         <div
-          className={`relative h-44 sm:h-52 bg-gradient-to-br ${style.from} ${style.to} flex items-center justify-center overflow-hidden`}
+          className={`relative h-56 sm:h-64 bg-gradient-to-br ${style.from} ${style.to} flex items-center justify-center overflow-hidden`}
           onClick={() => setModalOpen(true)}
         >
           {thumbnail ? (
@@ -68,7 +68,7 @@ export default function ProductCard({ product }: { product: Product }) {
               src={thumbnail}
               alt={product.name}
               fill
-              className="object-contain p-4 transform group-hover:scale-105 transition-transform duration-500"
+              className="object-contain p-1.5 transform group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
           ) : (

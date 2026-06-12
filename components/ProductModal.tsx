@@ -26,11 +26,18 @@ const categoryStyles: Record<string, string> = {
 export default function ProductModal({ product, onClose }: { product: Product; onClose: () => void }) {
   const { addToCart, openCart } = useCart();
   const [activeImage, setActiveImage] = useState(0);
+  const [zoomed, setZoomed] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
+
+  const openZoom = () => {
+    setZoomScale(1);
+    setZoomed(true);
+  };
 
   const images = product.images?.length
     ? product.images
@@ -61,15 +68,27 @@ export default function ProductModal({ product, onClose }: { product: Product; o
         onClick={(e) => e.stopPropagation()}
       >
         {/* Image header */}
-        <div className={`relative h-52 bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
+        <div className={`relative h-72 sm:h-96 bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
           {images.length > 0 ? (
-            <Image
-              src={images[activeImage]}
-              alt={product.name}
-              fill
-              className="object-contain p-6"
-              sizes="(max-width: 640px) 100vw, 512px"
-            />
+            <>
+              <Image
+                src={images[activeImage]}
+                alt={product.name}
+                fill
+                className="object-contain p-2 cursor-zoom-in"
+                sizes="(max-width: 640px) 100vw, 512px"
+                onClick={openZoom}
+              />
+              <button
+                onClick={openZoom}
+                className="absolute bottom-4 right-4 w-9 h-9 bg-white/80 rounded-full flex items-center justify-center text-trust hover:bg-white transition-colors"
+                aria-label="Zoom image"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M11 8v6m-3-3h6m4 0a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </>
           ) : (
             <span className="text-8xl">{emoji}</span>
           )}
@@ -150,6 +169,79 @@ export default function ProductModal({ product, onClose }: { product: Product; o
           </div>
         </div>
       </div>
+
+      {/* Fullscreen zoom lightbox */}
+      {zoomed && images.length > 0 && (
+        <div
+          className="fixed inset-0 z-[60] bg-black/95 flex flex-col"
+          onClick={(e) => { e.stopPropagation(); setZoomed(false); }}
+        >
+          {/* Controls */}
+          <div
+            className="absolute top-4 right-4 z-10 flex gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setZoomScale((s) => Math.min(s + 0.5, 4))}
+              className="w-11 h-11 bg-white/15 hover:bg-white/30 rounded-full flex items-center justify-center text-white text-2xl font-bold transition-colors"
+              aria-label="Zoom in"
+            >
+              +
+            </button>
+            <button
+              onClick={() => setZoomScale((s) => Math.max(s - 0.5, 1))}
+              className="w-11 h-11 bg-white/15 hover:bg-white/30 rounded-full flex items-center justify-center text-white text-2xl font-bold transition-colors"
+              aria-label="Zoom out"
+            >
+              −
+            </button>
+            <button
+              onClick={() => setZoomed(false)}
+              className="w-11 h-11 bg-white/15 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+              aria-label="Close zoom"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Scrollable zoom area */}
+          <div className="flex-1 overflow-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="min-h-full min-w-full flex">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={images[activeImage]}
+                alt={product.name}
+                className="m-auto select-none transition-[height] duration-200"
+                style={{ height: `${85 * zoomScale}vh`, width: "auto", maxWidth: "none" }}
+                onDoubleClick={() => setZoomScale((s) => (s > 1 ? 1 : 2))}
+                draggable={false}
+              />
+            </div>
+          </div>
+
+          {/* Thumbnail switcher inside lightbox */}
+          {images.length > 1 && (
+            <div
+              className="flex gap-2 justify-center py-3"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {images.map((src, i) => (
+                <button
+                  key={src}
+                  onClick={() => { setActiveImage(i); setZoomScale(1); }}
+                  className={`relative w-12 h-12 rounded-lg overflow-hidden border-2 transition-colors ${
+                    i === activeImage ? "border-white" : "border-white/30"
+                  }`}
+                >
+                  <Image src={src} alt={`${product.name} ${i + 1}`} fill className="object-cover" sizes="48px" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
