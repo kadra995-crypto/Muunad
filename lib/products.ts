@@ -47,6 +47,7 @@ export const products: Product[] = [
     description: "Fastest rising K-beauty toner. 77% heartleaf extract calms irritated, sensitive skin and preps it to absorb the rest of your routine.",
     tags: ["Heartleaf", "Soothing", "Calming", "K-Beauty"],
     stock: 7,
+    images: ["/products/anua-heartleaf-toner-1.jpg"],
   },
   {
     id: 4,
@@ -58,6 +59,7 @@ export const products: Product[] = [
     description: "Mildly exfoliating daily toner with centella asiatica from Madagascar. Refines skin texture and calms redness in one step.",
     tags: ["Centella", "Texture", "Soothing", "Daily Toner"],
     stock: 3,
+    images: ["/products/skin1004-centella-toner-1.jpg"],
   },
   {
     id: 5,
@@ -80,6 +82,7 @@ export const products: Product[] = [
     description: "#1 serum globally with unbeatable price-to-performance. Minimizes pores, controls oil, and fades dark spots and hyperpigmentation.",
     tags: ["Niacinamide", "Pore Care", "Brightening", "Oil Control"],
     stock: 18,
+    images: ["/products/ordinary-niacinamide-1.jpg"],
   },
   {
     id: 7,
@@ -91,6 +94,7 @@ export const products: Product[] = [
     description: "Viral K-beauty brightening serum. Rice bran water nourishes while alpha arbutin targets dark spots and uneven tone — perfect for sun-exposed skin.",
     tags: ["Brightening", "Rice", "Dark Spots", "K-Beauty"],
     stock: 10,
+    images: ["/products/boj-glow-deep-serum-1.jpg"],
   },
   {
     id: 8,
@@ -164,6 +168,7 @@ export const products: Product[] = [
     description: "Lightweight watery gel sunscreen with 8 types of hyaluronic acid. Hydrating, no white cast, and comfortable in hot weather all day.",
     tags: ["SPF 50+", "Watery Gel", "Hyaluronic Acid", "Lightweight"],
     stock: 7,
+    images: ["/products/isntree-hyaluronic-sun-gel-1.jpg"],
   },
   {
     id: 14,
