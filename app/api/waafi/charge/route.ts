@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeSomaliPhone } from "@/lib/phone";
 
 const WAAFI_API_URL = "https://api.waafipay.net/asm";
 
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const normalizedPhone = phone.replace(/\D/g, "");
+  const normalizedPhone = normalizeSomaliPhone(phone);
 
   const payload = {
     schemaVersion: "1.0",

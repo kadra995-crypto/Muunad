@@ -6,7 +6,7 @@ import { useCart } from "@/lib/CartContext";
 type PaymentMethod = "evc" | "sahal" | "zaad";
 type Step = "info" | "payment" | "confirm";
 
-const WHATSAPP_NUMBER = "25261896701";
+const WHATSAPP_NUMBER = "252611896701";
 const SHIPPING_FEE = 0.5;
 
 const PAYMENT_METHODS = [
