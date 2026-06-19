@@ -13,12 +13,14 @@ const shopCategories = [
   { name: "Treatment", emoji: "🔬" },
 ];
 
-// The North Star — Muunad's primary mark: a four-point spark with a gold core.
+// The North Star — Muunad's primary mark: a four-point spark with a single gold
+// core. Geometry mirrors the Brand Guidelines master path (slim, sharp waist with
+// the vertical points slightly longer than the horizontal).
 export function NorthStar({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none">
       <path
-        d="M12 0.5 Q13.1 10.9 23.5 12 Q13.1 13.1 12 23.5 Q10.9 13.1 0.5 12 Q10.9 10.9 12 0.5 Z"
+        d="M12 0.5 Q12.72 10.99 22.06 12 Q12.72 13.01 12 23.5 Q11.28 13.01 1.94 12 Q11.28 10.99 12 0.5 Z"
         fill="currentColor"
       />
       <circle cx="12" cy="12" r="2.3" fill="#C0894A" />
