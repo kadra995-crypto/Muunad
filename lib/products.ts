@@ -33,7 +33,7 @@ export const products: Product[] = [
     brand: "CeraVe",
     name: "Hydrating Cleanser",
     volume: "236ml",
-    retailPrice: 11.76,
+    retailPrice: 1.0,
     description: "Dermatologist-developed gentle cleanser with ceramides and hyaluronic acid. Cleanses without stripping moisture — ideal for normal to dry skin and daily use.",
     tags: ["Gentle", "Ceramides", "Dermatologist", "Hydrating"],
     stock: 12,

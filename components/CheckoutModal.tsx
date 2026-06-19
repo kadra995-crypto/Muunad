@@ -7,6 +7,7 @@ type PaymentMethod = "evc" | "sahal" | "zaad";
 type Step = "info" | "payment" | "confirm";
 
 const WHATSAPP_NUMBER = "25261896701";
+const SHIPPING_FEE = 0.5;
 
 const PAYMENT_METHODS = [
   { id: "evc" as PaymentMethod, label: "EVC Plus", emoji: "📱", desc: "Hormuud" },
@@ -15,7 +16,8 @@ const PAYMENT_METHODS = [
 ];
 
 export default function CheckoutModal() {
-  const { state, closeCheckout, clearCart, totalPrice, totalItems } = useCart();
+  const { state, closeCheckout, clearCart, totalPrice: subtotal, totalItems } = useCart();
+  const totalPrice = subtotal + SHIPPING_FEE;
   const [step, setStep] = useState<Step>("info");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("evc");
   const [orderNumber] = useState(() => `MND-${Date.now().toString().slice(-6)}`);
@@ -133,7 +135,15 @@ export default function CheckoutModal() {
               <div className="bg-light-50 rounded-2xl p-4 mb-4">
                 <p className="text-xs text-trust/50 mb-1">Order Summary</p>
                 <p className="text-sm font-semibold text-trust">{totalItems} items</p>
-                <p className="font-display text-2xl font-bold text-natural">${totalPrice.toFixed(2)}</p>
+                <div className="flex justify-between text-xs text-trust/60 mt-2">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-xs text-trust/60">
+                  <span>Shipping</span>
+                  <span>${SHIPPING_FEE.toFixed(2)}</span>
+                </div>
+                <p className="font-display text-2xl font-bold text-natural mt-1">${totalPrice.toFixed(2)}</p>
               </div>
 
               {[
@@ -196,7 +206,15 @@ export default function CheckoutModal() {
                   Pay with {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}
                 </p>
                 <div className="space-y-2 text-xs text-green-700">
-                  <div className="flex justify-between items-center py-2">
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-green-600">Subtotal:</span>
+                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-green-600">Shipping:</span>
+                    <span className="font-medium">${SHIPPING_FEE.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-t border-green-200">
                     <span className="text-green-600">Amount:</span>
                     <span className="font-bold text-base text-natural">${totalPrice.toFixed(2)}</span>
                   </div>
