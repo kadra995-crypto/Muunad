@@ -1,15 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Quicksand:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --natural: #3F4A3A;
-  --care: #C9A097;
-  --quality: #B8925F;
-  --trust: #4A3322;
-  --light: #EDE2D1;
+  /* Muunad brand palette */
+  --terracotta: #953414;
+  --cream: #FBEBD5;
+  --sienna: #6E2410;
+  --gold: #C0894A;
+  --blush: #E7C0A8;
+  --sand: #D9BD98;
+  --oat: #EFDCC2;
+  /* Semantic aliases */
+  --natural: #953414;
+  --care: #E7C0A8;
+  --quality: #C0894A;
+  --trust: #6E2410;
+  --light: #EFDCC2;
 }
 
 * {
@@ -23,14 +32,22 @@ html {
 }
 
 body {
-  background-color: #FAFAF8;
+  background-color: #FFFBF4;
   color: var(--trust);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
 
 .font-display {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-wordmark {
+  /* Muunad wordmark — Quicksand 600, tight tracking */
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Scrollbar */

@@ -45,13 +45,13 @@ export default function ProductGrid() {
       {/* Section header */}
       <div className="text-center mb-10">
         <span className="text-xs font-semibold tracking-widest text-quality uppercase">
-          Our Collection
+          The Collection
         </span>
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-natural mt-2 mb-3">
-          Premium Beauty Products
+        <h2 className="font-display text-4xl sm:text-5xl font-medium text-natural mt-2 mb-3">
+          Rituals, matched to you
         </h2>
         <p className="text-trust/60 text-sm max-w-lg mx-auto">
-          Carefully curated K-beauty and international skincare essentials.
+          Thoughtfully chosen skincare essentials, made in small batches.
           SPF-focused for Somalia&apos;s high-UV climate.
         </p>
       </div>

@@ -13,23 +13,31 @@ const shopCategories = [
   { name: "Treatment", emoji: "🔬" },
 ];
 
+// The North Star — Muunad's primary mark: a four-point spark with a gold core.
+export function NorthStar({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none">
+      <path
+        d="M12 0.5 Q13.1 10.9 23.5 12 Q13.1 13.1 12 23.5 Q10.9 13.1 0.5 12 Q10.9 10.9 12 0.5 Z"
+        fill="currentColor"
+      />
+      <circle cx="12" cy="12" r="2.3" fill="#C0894A" />
+    </svg>
+  );
+}
+
 function MuunadLogo() {
   return (
-    <div className="flex flex-col items-center leading-none select-none">
-      <svg viewBox="0 0 44 22" width="44" height="22" className="text-natural mb-0.5" fill="none">
-        <circle cx="22" cy="2.2" r="1.7" fill="currentColor" />
-        <path d="M4 19 C4 19 3 7 22 3.5 C41 7 40 19 40 19" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
-        <path d="M10 19 C10 13 14 10 22 11.5 C30 10 34 13 34 19" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round" />
-        <circle cx="4" cy="19" r="1.3" fill="currentColor" />
-        <circle cx="40" cy="19" r="1.3" fill="currentColor" />
-        <line x1="2" y1="20.8" x2="42" y2="20.8" stroke="currentColor" strokeWidth="1.1" />
-      </svg>
-      <span className="font-display text-2xl sm:text-[28px] font-bold tracking-[0.2em] text-natural">
-        MUUNAD
-      </span>
-      <span className="text-[8px] tracking-[0.35em] text-quality font-medium uppercase mt-0.5">
-        Pure Beauty
-      </span>
+    <div className="flex items-center gap-2.5 leading-none select-none">
+      <NorthStar className="w-6 h-6 sm:w-7 sm:h-7 text-natural" />
+      <div className="flex flex-col">
+        <span className="font-wordmark text-2xl sm:text-[28px] text-natural">
+          Muunad
+        </span>
+        <span className="text-[8px] tracking-[0.3em] text-quality font-medium uppercase mt-0.5">
+          All Care. Just For You.
+        </span>
+      </div>
     </div>
   );
 }

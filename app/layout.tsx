@@ -3,12 +3,12 @@ import "./globals.css";
 import { CartProvider } from "@/lib/CartContext";
 
 export const metadata: Metadata = {
-  title: "MUUNAD – Pure Beauty, Natural Essence",
-  description: "Premium skincare, body care, and beauty products curated for you. Shop K-beauty essentials, SPF protection, serums, and more.",
-  keywords: "skincare, K-beauty, SPF, Somalia, beauty, serums, moisturizer, MUUNAD",
+  title: "Muunad — All Care. Just For You.",
+  description: "Considered care, beautifully made — for skin worth keeping. Thoughtfully formulated skincare rituals, made in small batches and matched to you.",
+  keywords: "Muunad, skincare, cosmetics, ritual, SPF, Somalia, serums, moisturizer, considered care",
   openGraph: {
-    title: "MUUNAD – Pure Beauty, Natural Essence",
-    description: "Premium skincare and beauty products curated for the Somali market.",
+    title: "Muunad — All Care. Just For You.",
+    description: "Considered care, beautifully made — for skin worth keeping.",
     type: "website",
   },
 };

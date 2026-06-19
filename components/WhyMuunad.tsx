@@ -26,9 +26,9 @@ export default function WhyMuunad() {
     <section className="bg-white py-16 border-y border-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
-          <span className="text-xs font-semibold tracking-widest text-quality uppercase">Why Choose Us</span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-natural mt-2">
-            Beauty Made for You
+          <span className="text-xs font-semibold tracking-widest text-quality uppercase">Why Muunad</span>
+          <h2 className="font-display text-4xl sm:text-5xl font-medium text-natural mt-2">
+            Considered care, in every detail
           </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">

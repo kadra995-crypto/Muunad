@@ -9,19 +9,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        natural: "#3F4A3A",
-        care: "#C9A097",
-        quality: "#B8925F",
-        trust: "#4A3322",
-        light: "#EDE2D1",
-        "light-50": "#F7F3EE",
+        // Muunad brand palette (Brand Guidelines 2026 — V1)
+        terracotta: "#953414",
+        cream: "#FBEBD5",
+        sienna: "#6E2410",
+        gold: "#C0894A",
+        blush: "#E7C0A8",
+        sand: "#D9BD98",
+        oat: "#EFDCC2",
+        // Semantic tokens mapped onto the brand palette
+        natural: "#953414", // terracotta — primary
+        care: "#E7C0A8", // blush
+        quality: "#C0894A", // antique gold
+        trust: "#6E2410", // sienna — body text
+        light: "#EFDCC2", // oat
+        "light-50": "#FBEBD5", // cream — base
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        sans: ["Inter", "sans-serif"],
+        display: ["Cormorant Garamond", "serif"],
+        wordmark: ["Quicksand", "sans-serif"],
+        sans: ["Jost", "sans-serif"],
       },
       backgroundImage: {
-        "hero-gradient": "linear-gradient(135deg, #EDE2D1 0%, #C9A097 50%, #B8925F 100%)",
+        "hero-gradient": "linear-gradient(135deg, #FBEBD5 0%, #E7C0A8 50%, #C0894A 100%)",
       },
     },
   },

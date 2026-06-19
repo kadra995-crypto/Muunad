@@ -9,18 +9,18 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <span className="font-display text-3xl font-bold tracking-widest text-white">MUUNAD</span>
-              <p className="text-[10px] tracking-[0.3em] text-quality font-medium uppercase mt-0.5">
-                Pure Beauty
+              <span className="font-wordmark text-3xl text-white">Muunad</span>
+              <p className="text-[10px] tracking-[0.3em] text-quality font-medium uppercase mt-1">
+                All Care. Just For You.
               </p>
             </div>
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
-              MUUNAD brings premium K-beauty and international skincare to Somalia.
-              We curate the best products for our climate — SPF-focused, skin-type specific,
-              and always natural-first.
+              Muunad is a cosmetic house built on attentiveness — considered care, beautifully made,
+              for skin worth keeping. Thoughtfully formulated rituals, made in small batches
+              and matched to you.
             </p>
             <div className="flex flex-wrap gap-2 mt-4">
-              {["Natural", "Minimal", "Elegant", "Warm", "Premium"].map((vibe) => (
+              {["Warm", "Elegant", "Caring", "Considered", "Small Batch"].map((vibe) => (
                 <span key={vibe} className="text-[10px] px-3 py-1 border border-white/20 rounded-full text-white/60">
                   {vibe}
                 </span>
@@ -87,7 +87,7 @@ export default function Footer() {
             <span>Somalia UV Index 10–12 year-round — SPF is a daily necessity, not a luxury.</span>
           </div>
           <p className="text-xs text-white/30">
-            © {new Date().getFullYear()} MUUNAD. All rights reserved.
+            © {new Date().getFullYear()} Muunad. All rights reserved.
           </p>
         </div>
       </div>

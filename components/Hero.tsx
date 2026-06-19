@@ -1,5 +1,7 @@
 "use client";
 
+import { NorthStar } from "./Header";
+
 export default function Hero() {
   const scrollToProducts = () => {
     document.getElementById("products")?.scrollIntoView({ behavior: "smooth" });
@@ -18,23 +20,22 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left content */}
           <div className="text-center lg:text-left space-y-6">
-            <div className="inline-block px-4 py-1.5 bg-care/20 rounded-full">
+            <div className="inline-block px-4 py-1.5 bg-care/25 rounded-full">
               <span className="text-xs font-medium tracking-widest text-trust uppercase">
-                Pure Essence • Natural Elegance • Intentional Living
+                Cosmetics, with intention
               </span>
             </div>
 
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="text-natural">Your Daily</span>
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-medium leading-[1.05]">
+              <span className="text-natural">Care that</span>
               <br />
-              <span className="text-quality italic">Beauty</span>
-              <br />
-              <span className="text-natural">Ritual</span>
+              <span className="text-quality italic">knows</span>
+              <span className="text-natural"> your skin</span>
             </h1>
 
             <p className="text-base sm:text-lg text-trust/70 max-w-md mx-auto lg:mx-0 leading-relaxed">
-              Discover premium K-beauty skincare, SPF protection, and natural beauty essentials.
-              Curated especially for Somalia&apos;s vibrant beauty community.
+              Thoughtfully formulated rituals, made in small batches and matched to you.
+              Considered care, beautifully made — for skin worth keeping.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -42,7 +43,7 @@ export default function Hero() {
                 onClick={scrollToProducts}
                 className="bg-natural text-white px-8 py-4 rounded-2xl font-semibold text-sm tracking-wide hover:bg-trust transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
               >
-                Shop Now
+                Shop the ritual
               </button>
               <a
                 href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20would%20like%20to%20learn%20more%20about%20your%20products."
@@ -61,7 +62,7 @@ export default function Hero() {
             <div className="flex gap-8 justify-center lg:justify-start pt-4">
               {[
                 { value: "16", label: "Curated Products" },
-                { value: "K-Beauty", label: "Curated" },
+                { value: "Small Batch", label: "Made with care" },
                 { value: "SPF 50+", label: "Sun Protection" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center lg:text-left">
@@ -78,21 +79,21 @@ export default function Hero() {
               {/* Main circle */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-care/30 to-quality/20 border border-care/30" />
               {/* Center content */}
-              <div className="absolute inset-8 rounded-full bg-gradient-to-br from-light to-care/40 flex items-center justify-center">
-                <div className="text-center">
-                  <span className="text-6xl sm:text-8xl">🌿</span>
-                  <div className="mt-2 font-display text-natural text-sm font-semibold">MUUNAD</div>
+              <div className="absolute inset-8 rounded-full bg-gradient-to-br from-cream to-blush/50 flex items-center justify-center">
+                <div className="text-center flex flex-col items-center">
+                  <NorthStar className="w-16 h-16 sm:w-20 sm:h-20 text-natural" />
+                  <div className="mt-3 font-wordmark text-natural text-xl">Muunad</div>
                 </div>
               </div>
-              {/* Floating product circles */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-quality/20 border border-quality/30 flex items-center justify-center text-3xl">
-                ☀️
+              {/* Floating spark accents */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-quality/20 border border-quality/30 flex items-center justify-center">
+                <NorthStar className="w-8 h-8 text-quality" />
               </div>
-              <div className="absolute -bottom-2 -left-6 w-16 h-16 rounded-full bg-care/20 border border-care/30 flex items-center justify-center text-2xl">
-                💧
+              <div className="absolute -bottom-2 -left-6 w-16 h-16 rounded-full bg-care/30 border border-care/40 flex items-center justify-center">
+                <NorthStar className="w-6 h-6 text-natural" />
               </div>
-              <div className="absolute top-1/2 -right-8 w-14 h-14 rounded-full bg-natural/10 border border-natural/20 flex items-center justify-center text-2xl">
-                🌸
+              <div className="absolute top-1/2 -right-8 w-14 h-14 rounded-full bg-natural/10 border border-natural/20 flex items-center justify-center">
+                <NorthStar className="w-5 h-5 text-natural" />
               </div>
             </div>
           </div>
@@ -101,16 +102,16 @@ export default function Hero() {
 
       {/* Brand strip */}
       <div className="bg-natural text-white py-3 overflow-hidden">
-        <div className="flex animate-pulse gap-12 whitespace-nowrap text-xs tracking-widest font-medium justify-center">
-          <span>☀️ SPF 50+ PROTECTION</span>
-          <span>•</span>
-          <span>🌿 K-BEAUTY ESSENTIALS</span>
-          <span>•</span>
-          <span>💧 PREMIUM SERUMS</span>
-          <span>•</span>
-          <span>✨ NATURAL INGREDIENTS</span>
-          <span>•</span>
-          <span>📦 FAST DELIVERY</span>
+        <div className="flex flex-wrap gap-x-8 gap-y-1 whitespace-nowrap text-xs tracking-[0.2em] font-medium justify-center">
+          <span>ALL CARE. JUST FOR YOU.</span>
+          <span className="text-quality">✦</span>
+          <span>CONSIDERED CARE</span>
+          <span className="text-quality">✦</span>
+          <span>MADE IN SMALL BATCHES</span>
+          <span className="text-quality">✦</span>
+          <span>MATCHED TO YOU</span>
+          <span className="text-quality">✦</span>
+          <span>SKIN WORTH KEEPING</span>
         </div>
       </div>
     </section>
