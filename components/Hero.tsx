@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { NorthStar } from "./Header";
 
 export default function Hero() {
@@ -73,29 +74,49 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Right visual */}
+          {/* Right visual — most-loved product */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="relative w-72 h-72 sm:w-96 sm:h-96">
-              {/* Main circle */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-care/30 to-quality/20 border border-care/30" />
-              {/* Center content */}
-              <div className="absolute inset-8 rounded-full bg-gradient-to-br from-cream to-blush/50 flex items-center justify-center">
-                <div className="text-center flex flex-col items-center">
-                  <NorthStar className="w-16 h-16 sm:w-20 sm:h-20 text-natural" />
-                  <div className="mt-3 font-wordmark text-natural text-xl">Muunad</div>
+            <button
+              onClick={scrollToProducts}
+              className="group relative w-72 sm:w-[26rem] focus:outline-none text-left"
+              aria-label="Shop Beauty of Joseon Relief Sun SPF50+"
+            >
+              {/* Soft brand glow */}
+              <div className="absolute -inset-6 rounded-[2.75rem] bg-gradient-to-br from-care/40 to-quality/25 blur-2xl" />
+
+              {/* Product image card */}
+              <div className="relative rounded-[2rem] overflow-hidden border border-care/40 shadow-xl">
+                <Image
+                  src="/products/boj-relief-sun-2.jpg"
+                  alt="Beauty of Joseon Relief Sun SPF50+ — our most-loved ritual"
+                  width={736}
+                  height={1008}
+                  priority
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+
+                {/* Most Loved badge */}
+                <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-natural/95 text-white px-3 py-1.5 rounded-full text-[11px] font-semibold tracking-wide shadow-md">
+                  <NorthStar className="w-3.5 h-3.5 text-cream" />
+                  Most Loved
+                </div>
+
+                {/* Caption */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent p-5 pt-12">
+                  <p className="text-white text-base font-semibold leading-tight">
+                    Relief Sun SPF50+
+                  </p>
+                  <p className="text-white/80 text-xs mt-0.5">
+                    Beauty of Joseon · Rice + Probiotics
+                  </p>
                 </div>
               </div>
-              {/* Floating spark accents */}
-              <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-quality/20 border border-quality/30 flex items-center justify-center">
-                <NorthStar className="w-8 h-8 text-quality" />
+
+              {/* Floating spark accent */}
+              <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-quality/20 border border-quality/30 flex items-center justify-center backdrop-blur-sm">
+                <NorthStar className="w-7 h-7 text-quality" />
               </div>
-              <div className="absolute -bottom-2 -left-6 w-16 h-16 rounded-full bg-care/30 border border-care/40 flex items-center justify-center">
-                <NorthStar className="w-6 h-6 text-natural" />
-              </div>
-              <div className="absolute top-1/2 -right-8 w-14 h-14 rounded-full bg-natural/10 border border-natural/20 flex items-center justify-center">
-                <NorthStar className="w-5 h-5 text-natural" />
-              </div>
-            </div>
+            </button>
           </div>
         </div>
       </div>

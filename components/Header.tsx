@@ -30,13 +30,13 @@ export function NorthStar({ className = "" }: { className?: string }) {
 
 function MuunadLogo() {
   return (
-    <div className="flex items-center gap-2.5 leading-none select-none">
+    <div className="flex items-center gap-1.5 leading-none select-none">
       <NorthStar className="w-6 h-6 sm:w-7 sm:h-7 text-natural" />
-      <div className="flex flex-col">
+      <div className="flex flex-col items-start">
         <span className="font-wordmark text-2xl sm:text-[28px] text-natural">
           Muunad
         </span>
-        <span className="text-[8px] tracking-[0.3em] text-quality font-medium uppercase mt-0.5">
+        <span className="w-full text-center text-[7px] tracking-[0.15em] text-quality font-medium uppercase mt-0.5 whitespace-nowrap">
           All Care. Just For You.
         </span>
       </div>

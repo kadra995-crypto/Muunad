@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-4">
               <span className="font-wordmark text-3xl text-white">Muunad</span>
-              <p className="text-[10px] tracking-[0.3em] text-quality font-medium uppercase mt-1">
+              <p className="text-[10px] tracking-[0.2em] text-quality font-medium uppercase mt-1">
                 All Care. Just For You.
               </p>
             </div>
