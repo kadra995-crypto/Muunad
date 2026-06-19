@@ -8,12 +8,6 @@ type Step = "info" | "payment" | "confirm";
 
 const WHATSAPP_NUMBER = "25261896701";
 
-const MERCHANT_NUMBERS: Record<PaymentMethod, string> = {
-  evc: "+252 61 896 701",
-  sahal: "+252 61 896 701",
-  zaad: "+252 61 896 701",
-};
-
 const PAYMENT_METHODS = [
   { id: "evc" as PaymentMethod, label: "EVC Plus", emoji: "📱", desc: "Hormuud" },
   { id: "sahal" as PaymentMethod, label: "Sahal", emoji: "🏦", desc: "Premier Bank" },
@@ -27,8 +21,10 @@ export default function CheckoutModal() {
   const [orderNumber] = useState(() => `MND-${Date.now().toString().slice(-6)}`);
 
   const [info, setInfo] = useState({ name: "", phone: "", address: "" });
-  const [mobileRef, setMobileRef] = useState("");
+  const [walletPhone, setWalletPhone] = useState("");
+  const [transactionId, setTransactionId] = useState("");
   const [error, setError] = useState("");
+  const [isPaying, setIsPaying] = useState(false);
   // Snapshot of the total at confirmation time — totalPrice goes to 0 once the cart clears
   const [confirmedTotal, setConfirmedTotal] = useState(0);
 
@@ -37,7 +33,8 @@ export default function CheckoutModal() {
       document.body.style.overflow = "hidden";
       setStep("info");
       setError("");
-      setMobileRef("");
+      setWalletPhone("");
+      setIsPaying(false);
     } else {
       document.body.style.overflow = "";
     }
@@ -61,15 +58,39 @@ export default function CheckoutModal() {
     setStep("payment");
   };
 
-  const handleConfirmOrder = () => {
-    if (mobileRef.trim().length < 4) {
-      setError("Please enter the transaction reference number you received after sending the payment.");
+  const handleConfirmOrder = async () => {
+    if (!validPhone(walletPhone)) {
+      setError(`Please enter the ${PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label} number to charge.`);
       return;
     }
     setError("");
-    setConfirmedTotal(totalPrice);
-    setStep("confirm");
-    clearCart();
+    setIsPaying(true);
+    try {
+      const res = await fetch("/api/waafi/charge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: walletPhone,
+          amount: totalPrice,
+          orderNumber,
+          customerName: info.name,
+        }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Payment failed. Please try again.");
+        setIsPaying(false);
+        return;
+      }
+      setTransactionId(data.transactionId || "");
+      setConfirmedTotal(totalPrice);
+      setStep("confirm");
+      clearCart();
+    } catch {
+      setError("Could not process payment. Please check your connection and try again.");
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   return (
@@ -169,20 +190,12 @@ export default function CheckoutModal() {
                 ))}
               </div>
 
-              {/* Mobile money instructions */}
+              {/* WaafiPay wallet charge */}
               <div className="bg-green-50 border border-green-200 rounded-2xl p-4 space-y-3">
                 <p className="text-sm font-bold text-green-800">
-                  {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label} Payment Instructions
+                  Pay with {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}
                 </p>
                 <div className="space-y-2 text-xs text-green-700">
-                  <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="text-green-600">Send to:</span>
-                    <span className="font-bold text-sm">{MERCHANT_NUMBERS[paymentMethod]}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-green-200">
-                    <span className="text-green-600">Name:</span>
-                    <span className="font-bold">MUUNAD Store</span>
-                  </div>
                   <div className="flex justify-between items-center py-2">
                     <span className="text-green-600">Amount:</span>
                     <span className="font-bold text-base text-natural">${totalPrice.toFixed(2)}</span>
@@ -190,17 +203,17 @@ export default function CheckoutModal() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-green-800 mb-1.5 block">
-                    Enter Transaction Reference Number
+                    {PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label} Number
                   </label>
                   <input
-                    type="text"
-                    placeholder="e.g. TXN123456789"
-                    value={mobileRef}
-                    onChange={(e) => setMobileRef(e.target.value)}
+                    type="tel"
+                    placeholder="+252 61 XXX XXXX"
+                    value={walletPhone}
+                    onChange={(e) => setWalletPhone(e.target.value)}
                     className="w-full px-4 py-3 bg-white border border-green-300 rounded-xl text-sm text-trust placeholder-trust/30 focus:outline-none focus:border-green-500 transition-colors"
                   />
                   <p className="text-[10px] text-green-600 mt-1">
-                    Send the payment first, then enter the reference you received.
+                    You'll get a USSD prompt on this number to approve the payment.
                   </p>
                 </div>
               </div>
@@ -212,15 +225,17 @@ export default function CheckoutModal() {
               <div className="flex gap-3">
                 <button
                   onClick={() => { setError(""); setStep("info"); }}
-                  className="flex-1 border border-light text-trust py-3.5 rounded-2xl text-sm font-medium hover:border-natural hover:text-natural transition-colors"
+                  disabled={isPaying}
+                  className="flex-1 border border-light text-trust py-3.5 rounded-2xl text-sm font-medium hover:border-natural hover:text-natural transition-colors disabled:opacity-50"
                 >
                   ← Back
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  className="flex-[2] bg-natural text-white py-3.5 rounded-2xl text-sm font-semibold hover:bg-trust transition-colors"
+                  disabled={isPaying}
+                  className="flex-[2] bg-natural text-white py-3.5 rounded-2xl text-sm font-semibold hover:bg-trust transition-colors disabled:opacity-50"
                 >
-                  Confirm Order
+                  {isPaying ? "Processing…" : "Pay Now"}
                 </button>
               </div>
             </div>
@@ -252,8 +267,8 @@ export default function CheckoutModal() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-trust/50">Reference</span>
-                  <span className="font-bold text-natural">{mobileRef}</span>
+                  <span className="text-trust/50">Transaction ID</span>
+                  <span className="font-bold text-natural">{transactionId}</span>
                 </div>
               </div>
               <p className="text-xs text-trust/50 leading-relaxed">
@@ -261,7 +276,7 @@ export default function CheckoutModal() {
               </p>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                  `Hello MUUNAD! My order ${orderNumber} has been placed.\nName: ${info.name}\nTotal: $${confirmedTotal.toFixed(2)}\nPayment: ${PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}\nReference: ${mobileRef}\nAddress: ${info.address}`
+                  `Hello MUUNAD! My order ${orderNumber} has been placed.\nName: ${info.name}\nTotal: $${confirmedTotal.toFixed(2)}\nPayment: ${PAYMENT_METHODS.find((p) => p.id === paymentMethod)?.label}\nTransaction ID: ${transactionId}\nAddress: ${info.address}`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
