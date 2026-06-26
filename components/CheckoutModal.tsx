@@ -84,6 +84,29 @@ export default function CheckoutModal() {
       }
       setTransactionId(data.transactionId || "");
       setConfirmedTotal(totalPrice);
+
+      // Best-effort: order history must never block a customer's already-paid checkout.
+      fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderNumber,
+          phone: walletPhone,
+          customerName: info.name,
+          address: info.address,
+          items: state.items.map((i) => ({
+            productId: i.product.id,
+            name: i.product.name,
+            brand: i.product.brand,
+            quantity: i.quantity,
+            price: i.product.retailPrice,
+          })),
+          total: totalPrice,
+          paymentMethod,
+          transactionId: data.transactionId || "",
+        }),
+      }).catch(() => {});
+
       setStep("confirm");
       clearCart();
     } catch {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { useCart } from "@/lib/CartContext";
 
 const shopCategories = [
@@ -152,6 +153,12 @@ export default function Header() {
             >
               Contact
             </a>
+            <Link
+              href="/account"
+              className="text-sm font-medium text-trust hover:text-natural transition-colors"
+            >
+              Account
+            </Link>
           </nav>
 
           {/* Right actions */}
@@ -249,10 +256,17 @@ export default function Header() {
               href="https://wa.me/25261896701?text=Hello%20MUUNAD!%20I%20need%20help%20with%20a%20product."
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-trust py-3"
+              className="text-sm font-medium text-trust py-3 border-b border-light/50"
             >
               Contact via WhatsApp
             </a>
+            <Link
+              href="/account"
+              onClick={() => setMenuOpen(false)}
+              className="text-sm font-medium text-trust py-3"
+            >
+              Account
+            </Link>
           </div>
         </div>
       )}

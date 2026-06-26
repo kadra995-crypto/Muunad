@@ -18,6 +18,7 @@ import { colors, fonts, radii } from "../lib/theme";
 
 const WHATSAPP_NUMBER = "25261896701";
 const WAAFI_CHARGE_URL = "https://muunad.com/api/waafi/charge";
+const ORDERS_URL = "https://muunad.com/api/orders";
 
 type PaymentMethod = "evc" | "sahal" | "zaad";
 type Step = "info" | "payment" | "confirm";
@@ -31,7 +32,7 @@ const PAYMENT_METHODS: { id: PaymentMethod; label: string; emoji: string; desc: 
 export default function CheckoutScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { clearCart, totalPrice, totalItems } = useCart();
+  const { items, clearCart, totalPrice, totalItems } = useCart();
 
   const [step, setStep] = useState<Step>("info");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("evc");
@@ -87,6 +88,29 @@ export default function CheckoutScreen() {
       }
       setTransactionId(data.transactionId || "");
       setConfirmedTotal(totalPrice);
+
+      // Best-effort: order history must never block a customer's already-paid checkout.
+      fetch(ORDERS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderNumber,
+          phone: walletPhone,
+          customerName: info.name,
+          address: info.address,
+          items: items.map((i) => ({
+            productId: i.product.id,
+            name: i.product.name,
+            brand: i.product.brand,
+            quantity: i.quantity,
+            price: i.product.retailPrice,
+          })),
+          total: totalPrice,
+          paymentMethod,
+          transactionId: data.transactionId || "",
+        }),
+      }).catch(() => {});
+
       setStep("confirm");
       clearCart();
     } catch {
