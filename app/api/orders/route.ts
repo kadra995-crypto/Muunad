@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin, isSupabaseAdminConfigured } from "@/lib/supabaseServer";
+import { sql } from "@vercel/postgres";
+import { isDbConfigured } from "@/lib/db";
 import { normalizePhone } from "@/lib/phone";
 
 interface OrderItemInput {
@@ -22,9 +23,9 @@ interface CreateOrderBody {
 }
 
 export async function POST(req: NextRequest) {
-  // Saving order history is best-effort: a missing/misconfigured Supabase
-  // project must never block a customer's already-paid checkout.
-  if (!isSupabaseAdminConfigured || !supabaseAdmin) {
+  // Saving order history is best-effort: a missing/misconfigured database
+  // must never block a customer's already-paid checkout.
+  if (!isDbConfigured) {
     return NextResponse.json({ success: false, message: "Order history is not configured." }, { status: 200 });
   }
 
@@ -35,19 +36,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, message: "Missing required order fields." }, { status: 400 });
   }
 
-  const { error } = await supabaseAdmin.from("orders").insert({
-    order_number: orderNumber,
-    customer_phone: normalizePhone(phone),
-    customer_name: customerName,
-    address,
-    items,
-    total,
-    payment_method: paymentMethod,
-    transaction_id: transactionId || null,
-  });
-
-  if (error) {
-    return NextResponse.json({ success: false, message: error.message }, { status: 200 });
+  try {
+    await sql`
+      insert into orders (order_number, customer_phone, customer_name, address, items, total, payment_method, transaction_id)
+      values (
+        ${orderNumber},
+        ${normalizePhone(phone)},
+        ${customerName},
+        ${address},
+        ${JSON.stringify(items)}::jsonb,
+        ${total},
+        ${paymentMethod},
+        ${transactionId || null}
+      )
+    `;
+  } catch (err) {
+    return NextResponse.json(
+      { success: false, message: err instanceof Error ? err.message : "Failed to save order." },
+      { status: 200 }
+    );
   }
 
   return NextResponse.json({ success: true });

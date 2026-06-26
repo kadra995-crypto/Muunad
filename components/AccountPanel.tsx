@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
-import { supabase, isSupabaseConfigured } from "@/lib/supabaseClient";
-import { toE164, isValidPhone } from "@/lib/phone";
+import { isValidPhone } from "@/lib/phone";
 
 interface OrderItem {
   productId: number;
@@ -31,10 +29,14 @@ const PAYMENT_LABELS: Record<string, string> = {
   zaad: "Zaad",
 };
 
+const TOKEN_KEY = "muunad_session_token";
+const PHONE_KEY = "muunad_session_phone";
+
 type Step = "phone" | "otp";
 
 export default function AccountPanel() {
-  const [session, setSession] = useState<Session | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [signedInPhone, setSignedInPhone] = useState<string | null>(null);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
@@ -45,49 +47,40 @@ export default function AccountPanel() {
   const [ordersError, setOrdersError] = useState("");
 
   useEffect(() => {
-    if (!supabase) {
-      setSessionLoaded(true);
-      return;
-    }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setSessionLoaded(true);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-    return () => listener.subscription.unsubscribe();
+    setToken(localStorage.getItem(TOKEN_KEY));
+    setSignedInPhone(localStorage.getItem(PHONE_KEY));
+    setSessionLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (!supabase || !session) return;
+    if (!token) return;
     setOrdersError("");
-    supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .then(({ data, error }) => {
-        if (error) {
-          setOrdersError("Could not load your order history. Please try again.");
+    fetch("/api/orders/history", { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) {
+          signOut();
           return;
         }
-        setOrders(data as Order[]);
-      });
-  }, [session]);
-
-  if (!isSupabaseConfigured || !supabase) {
-    return (
-      <div className="bg-white rounded-3xl border border-light p-6 text-center">
-        <p className="text-sm text-trust/70">
-          Account and order history aren&apos;t set up yet. Check back soon.
-        </p>
-      </div>
-    );
-  }
+        setOrders(data.orders as Order[]);
+      })
+      .catch(() => setOrdersError("Could not load your order history. Please try again."));
+  }, [token]);
 
   if (!sessionLoaded) {
     return null;
   }
+
+  const signOut = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(PHONE_KEY);
+    setToken(null);
+    setSignedInPhone(null);
+    setStep("phone");
+    setPhone("");
+    setCode("");
+    setOrders(null);
+  };
 
   const handleSendCode = async () => {
     if (!isValidPhone(phone)) {
@@ -96,13 +89,23 @@ export default function AccountPanel() {
     }
     setError("");
     setIsSending(true);
-    const { error } = await supabase!.auth.signInWithOtp({ phone: toE164(phone) });
-    setIsSending(false);
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const res = await fetch("/api/auth/send-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Could not send the verification code. Please try again.");
+        return;
+      }
+      setStep("otp");
+    } catch {
+      setError("Could not send the verification code. Please check your connection and try again.");
+    } finally {
+      setIsSending(false);
     }
-    setStep("otp");
   };
 
   const handleVerifyCode = async () => {
@@ -112,34 +115,36 @@ export default function AccountPanel() {
     }
     setError("");
     setIsSending(true);
-    const { error } = await supabase!.auth.verifyOtp({
-      phone: toE164(phone),
-      token: code.trim(),
-      type: "sms",
-    });
-    setIsSending(false);
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const res = await fetch("/api/auth/verify-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, code: code.trim() }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Incorrect code. Please try again.");
+        return;
+      }
+      localStorage.setItem(TOKEN_KEY, data.token);
+      localStorage.setItem(PHONE_KEY, data.phone);
+      setToken(data.token);
+      setSignedInPhone(data.phone);
+    } catch {
+      setError("Could not verify the code. Please check your connection and try again.");
+    } finally {
+      setIsSending(false);
     }
   };
 
-  const handleSignOut = async () => {
-    await supabase!.auth.signOut();
-    setStep("phone");
-    setPhone("");
-    setCode("");
-    setOrders(null);
-  };
-
-  if (session) {
+  if (token && signedInPhone) {
     return (
       <div className="space-y-6">
         <div className="bg-white rounded-3xl border border-light p-6">
           <p className="text-xs text-trust/50">Signed in as</p>
-          <p className="font-display text-xl font-bold text-natural">{session.user.phone}</p>
+          <p className="font-display text-xl font-bold text-natural">{signedInPhone}</p>
           <button
-            onClick={handleSignOut}
+            onClick={signOut}
             className="mt-4 text-xs font-semibold text-trust/60 hover:text-natural transition-colors"
           >
             Sign out
@@ -221,7 +226,7 @@ export default function AccountPanel() {
       {step === "otp" && (
         <div className="space-y-4">
           <p className="text-xs text-trust/60">
-            Enter the code sent to <strong>{toE164(phone)}</strong>.
+            Enter the code sent to <strong>{phone}</strong>.
           </p>
           <input
             type="text"

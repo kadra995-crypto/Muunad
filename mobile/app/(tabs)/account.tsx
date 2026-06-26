@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { View, Text, TextInput, Pressable, ScrollView, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import type { Session } from "@supabase/supabase-js";
-import { supabase, isSupabaseConfigured } from "../../lib/supabase";
-import { toE164, isValidPhone } from "../../lib/phone";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isValidPhone } from "../../lib/phone";
 import { colors, fonts, radii } from "../../lib/theme";
+
+const SEND_CODE_URL = "https://muunad.com/api/auth/send-code";
+const VERIFY_CODE_URL = "https://muunad.com/api/auth/verify-code";
+const ORDERS_HISTORY_URL = "https://muunad.com/api/orders/history";
+const TOKEN_KEY = "muunad_session_token";
+const PHONE_KEY = "muunad_session_phone";
 
 interface OrderItem {
   productId: number;
@@ -36,7 +41,8 @@ type Step = "phone" | "otp";
 
 export default function AccountScreen() {
   const insets = useSafeAreaInsets();
-  const [session, setSession] = useState<Session | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [signedInPhone, setSignedInPhone] = useState<string | null>(null);
   const [sessionLoaded, setSessionLoaded] = useState(false);
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
@@ -47,49 +53,44 @@ export default function AccountScreen() {
   const [ordersError, setOrdersError] = useState("");
 
   useEffect(() => {
-    if (!supabase) {
-      setSessionLoaded(true);
-      return;
-    }
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setSessionLoaded(true);
-    });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, newSession) => {
-      setSession(newSession);
-    });
-    return () => listener.subscription.unsubscribe();
+    Promise.all([AsyncStorage.getItem(TOKEN_KEY), AsyncStorage.getItem(PHONE_KEY)]).then(
+      ([storedToken, storedPhone]) => {
+        setToken(storedToken);
+        setSignedInPhone(storedPhone);
+        setSessionLoaded(true);
+      }
+    );
   }, []);
 
   useEffect(() => {
-    if (!supabase || !session) return;
+    if (!token) return;
     setOrdersError("");
-    supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .then(({ data, error }) => {
-        if (error) {
-          setOrdersError("Could not load your order history. Please try again.");
+    fetch(ORDERS_HISTORY_URL, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) {
+          signOut();
           return;
         }
-        setOrders(data as Order[]);
-      });
-  }, [session]);
-
-  if (!isSupabaseConfigured || !supabase) {
-    return (
-      <View style={[styles.container, styles.centered, { paddingTop: insets.top }]}>
-        <Text style={styles.notConfiguredText}>
-          Account and order history aren't set up yet. Check back soon.
-        </Text>
-      </View>
-    );
-  }
+        setOrders(data.orders as Order[]);
+      })
+      .catch(() => setOrdersError("Could not load your order history. Please try again."));
+  }, [token]);
 
   if (!sessionLoaded) {
     return <View style={[styles.container, { paddingTop: insets.top }]} />;
   }
+
+  const signOut = async () => {
+    await AsyncStorage.removeItem(TOKEN_KEY);
+    await AsyncStorage.removeItem(PHONE_KEY);
+    setToken(null);
+    setSignedInPhone(null);
+    setStep("phone");
+    setPhone("");
+    setCode("");
+    setOrders(null);
+  };
 
   const handleSendCode = async () => {
     if (!isValidPhone(phone)) {
@@ -98,13 +99,23 @@ export default function AccountScreen() {
     }
     setError("");
     setIsSending(true);
-    const { error } = await supabase!.auth.signInWithOtp({ phone: toE164(phone) });
-    setIsSending(false);
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const res = await fetch(SEND_CODE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Could not send the verification code. Please try again.");
+        return;
+      }
+      setStep("otp");
+    } catch {
+      setError("Could not send the verification code. Please check your connection and try again.");
+    } finally {
+      setIsSending(false);
     }
-    setStep("otp");
   };
 
   const handleVerifyCode = async () => {
@@ -114,27 +125,29 @@ export default function AccountScreen() {
     }
     setError("");
     setIsSending(true);
-    const { error } = await supabase!.auth.verifyOtp({
-      phone: toE164(phone),
-      token: code.trim(),
-      type: "sms",
-    });
-    setIsSending(false);
-    if (error) {
-      setError(error.message);
-      return;
+    try {
+      const res = await fetch(VERIFY_CODE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, code: code.trim() }),
+      });
+      const data = await res.json();
+      if (!data.success) {
+        setError(data.message || "Incorrect code. Please try again.");
+        return;
+      }
+      await AsyncStorage.setItem(TOKEN_KEY, data.token);
+      await AsyncStorage.setItem(PHONE_KEY, data.phone);
+      setToken(data.token);
+      setSignedInPhone(data.phone);
+    } catch {
+      setError("Could not verify the code. Please check your connection and try again.");
+    } finally {
+      setIsSending(false);
     }
   };
 
-  const handleSignOut = async () => {
-    await supabase!.auth.signOut();
-    setStep("phone");
-    setPhone("");
-    setCode("");
-    setOrders(null);
-  };
-
-  if (session) {
+  if (token && signedInPhone) {
     return (
       <ScrollView
         style={styles.container}
@@ -142,8 +155,8 @@ export default function AccountScreen() {
       >
         <View style={styles.card}>
           <Text style={styles.cardLabel}>Signed in as</Text>
-          <Text style={styles.cardValue}>{session.user.phone}</Text>
-          <Pressable onPress={handleSignOut}>
+          <Text style={styles.cardValue}>{signedInPhone}</Text>
+          <Pressable onPress={signOut}>
             <Text style={styles.signOutText}>Sign out</Text>
           </Pressable>
         </View>
@@ -220,7 +233,7 @@ export default function AccountScreen() {
         {step === "otp" && (
           <View style={styles.formGap}>
             <Text style={styles.otpHint}>
-              Enter the code sent to <Text style={styles.otpHintBold}>{toE164(phone)}</Text>.
+              Enter the code sent to <Text style={styles.otpHintBold}>{phone}</Text>.
             </Text>
             <TextInput
               placeholder="123456"
