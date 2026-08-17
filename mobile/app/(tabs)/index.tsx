@@ -169,13 +169,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   headlineNatural: {
-    fontFamily: "CormorantGaramond_600SemiBold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 44,
     lineHeight: 48,
     color: colors.natural,
   },
   headlineItalic: {
-    fontFamily: "CormorantGaramond_600SemiBold_Italic",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 44,
     lineHeight: 48,
     color: colors.quality,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   statValue: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 18,
     color: colors.natural,
   },
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   whyTitle: {
-    fontFamily: "CormorantGaramond_600SemiBold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 26,
     color: colors.natural,
     textAlign: "center",
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   featureTitle: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 16,
     color: colors.trust,
     marginBottom: 6,

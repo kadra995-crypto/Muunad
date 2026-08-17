@@ -23,10 +23,10 @@ const ORDERS_URL = "https://muunad.com/api/orders";
 type PaymentMethod = "evc" | "sahal" | "zaad";
 type Step = "info" | "payment" | "confirm";
 
-const PAYMENT_METHODS: { id: PaymentMethod; label: string; emoji: string; desc: string }[] = [
-  { id: "evc", label: "EVC Plus", emoji: "📱", desc: "Hormuud" },
-  { id: "sahal", label: "Sahal", emoji: "🏦", desc: "Premier Bank" },
-  { id: "zaad", label: "Zaad", emoji: "📲", desc: "Telesom" },
+const PAYMENT_METHODS: { id: PaymentMethod; label: string; abbr: string; badgeColor: string; desc: string }[] = [
+  { id: "evc", label: "EVC Plus", abbr: "EVC", badgeColor: "#0A8A3F", desc: "Hormuud Telecom" },
+  { id: "sahal", label: "Sahal", abbr: "Sahal", badgeColor: "#1F5FAE", desc: "Premier Bank" },
+  { id: "zaad", label: "Zaad", abbr: "Zaad", badgeColor: "#D8412F", desc: "Telesom" },
 ];
 
 export default function CheckoutScreen() {
@@ -192,7 +192,7 @@ export default function CheckoutScreen() {
           <View style={styles.stepContent}>
             <Text style={styles.sectionLabel}>Choose Payment Method</Text>
 
-            <View style={styles.methodRow}>
+            <View style={styles.methodList}>
               {PAYMENT_METHODS.map((pm) => {
                 const selected = paymentMethod === pm.id;
                 return (
@@ -201,9 +201,16 @@ export default function CheckoutScreen() {
                     onPress={() => setPaymentMethod(pm.id)}
                     style={[styles.methodCard, selected && styles.methodCardSelected]}
                   >
-                    <Text style={styles.methodEmoji}>{pm.emoji}</Text>
-                    <Text style={styles.methodLabel}>{pm.label}</Text>
-                    <Text style={styles.methodDesc}>{pm.desc}</Text>
+                    <View style={[styles.methodBadge, { backgroundColor: pm.badgeColor }]}>
+                      <Text style={styles.methodBadgeText}>{pm.abbr}</Text>
+                    </View>
+                    <View style={styles.methodInfo}>
+                      <Text style={[styles.methodLabel, selected && styles.methodLabelSelected]}>{pm.label}</Text>
+                      <Text style={styles.methodDesc}>{pm.desc}</Text>
+                    </View>
+                    <View style={[styles.methodRadio, selected && styles.methodRadioSelected]}>
+                      {selected && <View style={styles.methodRadioDot} />}
+                    </View>
                   </Pressable>
                 );
               })}
@@ -348,7 +355,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.light,
   },
   headerTitle: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 20,
     color: colors.natural,
   },
@@ -404,7 +411,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   summaryTotal: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 24,
     color: colors.natural,
     marginTop: 2,
@@ -458,35 +465,72 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.trust,
   },
-  methodRow: {
-    flexDirection: "row",
+  methodList: {
     gap: 10,
   },
   methodCard: {
-    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 14,
     borderWidth: 1.5,
     borderColor: colors.light,
     borderRadius: radii.md,
-    padding: 12,
+    padding: 14,
     backgroundColor: colors.white,
   },
   methodCardSelected: {
     borderColor: colors.natural,
-    backgroundColor: colors.natural + "0D",
+    backgroundColor: colors.natural + "06",
   },
-  methodEmoji: {
-    fontSize: 22,
-    marginBottom: 4,
+  methodBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  methodBadgeText: {
+    fontFamily: fonts.sansBold,
+    fontSize: 11,
+    color: colors.white,
+    letterSpacing: 0.3,
+  },
+  methodInfo: {
+    flex: 1,
   },
   methodLabel: {
     fontFamily: fonts.sansMedium,
-    fontSize: 11,
+    fontSize: 13.5,
     color: colors.trust,
+  },
+  methodLabelSelected: {
+    color: colors.natural,
+    fontFamily: fonts.sansBold,
   },
   methodDesc: {
     fontFamily: fonts.sans,
-    fontSize: 9.5,
+    fontSize: 11,
     color: colors.trust + "80",
+    marginTop: 1,
+  },
+  methodRadio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    borderColor: colors.light,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  methodRadioSelected: {
+    borderColor: colors.natural,
+    backgroundColor: colors.natural,
+  },
+  methodRadioDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.white,
   },
   walletCard: {
     backgroundColor: "#F0FDF4",
@@ -513,7 +557,7 @@ const styles = StyleSheet.create({
     color: "#15803D",
   },
   walletAmountValue: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 18,
     color: colors.natural,
   },
@@ -578,7 +622,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   confirmTitle: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 24,
     color: colors.natural,
   },

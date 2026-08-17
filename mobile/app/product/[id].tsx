@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   name: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 24,
     color: colors.natural,
     marginTop: 4,
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   price: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 28,
     color: colors.natural,
   },

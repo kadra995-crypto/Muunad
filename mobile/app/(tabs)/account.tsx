@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 22,
     color: colors.natural,
   },
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     color: colors.trust + "80",
   },
   cardValue: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 20,
     color: colors.natural,
     marginTop: 2,
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     color: colors.trust + "99",
   },
   sectionTitle: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 20,
     color: colors.natural,
   },
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     color: colors.trust + "99",
   },
   orderTotal: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 16,
     color: colors.natural,
   },

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   emptyTitle: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 22,
     color: colors.natural,
   },
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   title: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 28,
     color: colors.natural,
     marginTop: 2,
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     color: colors.trust,
   },
   price: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 16,
     color: colors.natural,
     marginTop: 2,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     color: colors.trust + "99",
   },
   totalValue: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 26,
     color: colors.natural,
   },

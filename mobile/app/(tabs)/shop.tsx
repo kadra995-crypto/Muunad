@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   title: {
-    fontFamily: "CormorantGaramond_700Bold",
+    fontFamily: "Marcellus_400Regular",
     fontSize: 28,
     color: colors.natural,
     marginTop: 2,

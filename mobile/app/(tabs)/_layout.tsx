@@ -10,10 +10,10 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.natural,
-        tabBarInactiveTintColor: colors.trust + "80",
+        tabBarActiveTintColor: colors.care,
+        tabBarInactiveTintColor: colors.trust,
         tabBarStyle: {
-          backgroundColor: colors.white,
+          backgroundColor: colors.light50,
           borderTopColor: colors.light,
           height: 64,
           paddingTop: 6,
